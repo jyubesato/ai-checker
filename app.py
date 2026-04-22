@@ -1,16 +1,37 @@
 import streamlit as st
 import random
 import time
+from streamlit_paste_button import paste_image_button  # 追加
 
 st.set_page_config(page_title="Hyper AI Checker", page_icon="🤖")
 
-st.title("🤖 次世代AI パルワールド/ポケモン判定システム")
-st.write("最新のディープラーニング技術と独自の画像認識アルゴリズムを用いて、アップロードされた画像を瞬時に解析・分類します。")
+st.title("🤖 次世代AI パル/ポケ判定システム")
+st.write("最新の技術と独自の画像認識アルゴリズムを用いて、アップロードされた画像を瞬時に解析・分類します。")
 
-uploaded_file = st.file_uploader("解析する画像をアップロードしてください", type=["jpg", "png"])
+# --- 画像入力エリア（ファイル選択 or コピペボタン） ---
+st.write("画像をアップロードするか、クリップボードから直接貼り付けてください。")
 
+col1, col2 = st.columns(2)
+with col1:
+    uploaded_file = st.file_uploader("フォルダから選ぶ", type=["jpg", "png"], label_visibility="collapsed")
+with col2:
+    st.write("または")
+    paste_result = paste_image_button(
+        label="📋 コピーした画像を貼り付け",
+        background_color="#FF4B4B",
+        hover_background_color="#FF0000"
+    )
+
+# どちらかから画像が入力されたら、変数 img_data に格納する
+img_data = None
 if uploaded_file is not None:
-    st.image(uploaded_file, caption='解析ターゲット', use_container_width=True)
+    img_data = uploaded_file
+elif paste_result.image_data is not None:
+    img_data = paste_result.image_data
+
+# --- 解析処理 ---
+if img_data is not None:
+    st.image(img_data, caption='解析ターゲット', use_container_width=True)
     
     with st.status("AIコアが画像を解析中...", expanded=True) as status:
         st.write("🔍 画像から特徴量を抽出しています...")
@@ -22,10 +43,10 @@ if uploaded_file is not None:
         status.update(label="解析プロセス完了", state="complete", expanded=False)
     
     results = [
-        "【判定: ポケモン】\n確信度: 99.8% (深層学習モデルによる結論です)",
+        "【判定: ポケモン】\n確信度: 99.8% (最新のアルゴリズムがそう言っています)",
         "【判定: パルワールド】\n確信度: 98.5% (最新のアルゴリズムがそう言っています)",
         "【判定: エラー】\n画像が複雑すぎます。おそらく実写の猫か何かです。",
-        "【判定: デジモン】\n確信度: 120% (量子コンピューターによる導出)"
+        "【判定: デジモン】\n確信度: 120% (最新のアルゴリズムがそう言っています)"
     ]
     ans = random.choice(results)
     
