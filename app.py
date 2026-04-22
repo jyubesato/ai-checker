@@ -35,11 +35,11 @@ if img_data is not None:
     
     with st.status("AIコアが画像を解析中...", expanded=True) as status:
         st.write("🔍 画像から特徴量を抽出しています...")
-        time.sleep(5)
+        time.sleep(1.5)
         st.write("🧠 巨大ニューラルネットワークに照会中...")
-        time.sleep(5.5)
+        time.sleep(2.5)
         st.write("⚡ 最終判定アルゴリズムを実行中...")
-        time.sleep(5)
+        time.sleep(2)
         status.update(label="解析プロセス完了", state="complete", expanded=False)
     
     results = [
