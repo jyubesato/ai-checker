@@ -1,55 +1,43 @@
 import streamlit as st
 import random
 import time
-from streamlit_paste_button import paste_image_button  # 追加
 
+# --- 画面の基本設定 ---
 st.set_page_config(page_title="Hyper AI Checker", page_icon="🤖")
 
 st.title("🤖 次世代AI パル/ポケモン判定システム")
-st.write("最新の技術と独自の画像認識アルゴリズムを用いて、アップロードされた画像を瞬時に解析・分類します。")
+st.write("最新の独自の画像認識アルゴリズムを用いて、アップロードされた画像を瞬時に解析・分類します。")
 
-# --- 画像入力エリア（ファイル選択 or コピペボタン） ---
-st.write("画像をアップロードするか、クリップボードから直接貼り付けてください。")
+# --- 画像入力エリア ---
+uploaded_file = st.file_uploader("画像をドラッグ＆ドロップするか、枠内をクリックして Ctrl+V で貼り付け！", type=["jpg", "png"])
 
-col1, col2 = st.columns(2)
-with col1:
-    uploaded_file = st.file_uploader("フォルダから選ぶ", type=["jpg", "png"], label_visibility="collapsed")
-with col2:
-    st.write("または")
-    paste_result = paste_image_button(
-        label="📋 コピーした画像を貼り付け",
-        background_color="#FF4B4B",
-        hover_background_color="#FF0000"
-    )
-
-# どちらかから画像が入力されたら、変数 img_data に格納する
-img_data = None
 if uploaded_file is not None:
-    img_data = uploaded_file
-elif paste_result.image_data is not None:
-    img_data = paste_result.image_data
-
-# --- 解析処理 ---
-if img_data is not None:
-    st.image(img_data, caption='解析ターゲット', use_container_width=True)
+    # 表示サイズを抑えめに設定 (width=400)
+    st.image(uploaded_file, caption='解析ターゲット', width=400)
     
     with st.status("AIコアが画像を解析中...", expanded=True) as status:
-        st.write("🔍 画像から特徴量を抽出しています...")
+        st.write("🔍 特徴量を抽出中...")
         time.sleep(1.5)
-        st.write("🧠 巨大ニューラルネットワークに照会中...")
-        time.sleep(2.5)
-        st.write("⚡ 最終判定アルゴリズムを実行中...")
+        st.write("🧠 ニューラルネットワーク照会中...")
+        time.sleep(2)
+        st.write("⚡ 最終判定を実行中...")
         time.sleep(2)
         status.update(label="解析プロセス完了", state="complete", expanded=False)
     
-    results = [
-        "【判定: ポケモン】\n確信度: 99.8% (まあ確実にそうでしょう。最新のアルゴリズムがそう言っています)",
-        "【判定: パルワールドのパル】\n確信度: 98.5% (まあ確実にそうでしょ？最新のアルゴリズムがそう言っています)",
-        "【判定: デジモン】\n確信度: 120% (ポケモンやパルのフリをしても無駄だと、最新のアルゴリズムがそう言っています)"
+    # --- 判定ロジック（確率調整） ---
+    # 選択肢から「エラー」を削除
+    res_list = [
+        "【判定: ポケモン】\n確信度: 99.8% (まあほぼ間違いないだろう、と最新のアルゴリズムが言っています)",
+        "【判定: パルワールドのパル】\n確信度: 98.5% (これは完全にパル。最新のアルゴリズムがそう言っています)",
+        "【判定: デジモン】\n確信度: 120% (騙そうったってそうはいかないと、最新のアルゴリズムが言っています)"
     ]
-    ans = random.choices(outcomes, weights=[40, 40, 20], k=1)[0]
     
-    st.success("解析が完了しました。以下の結果をご確認ください。")
+    # 確率を重み付け (ポケ: 3, パル: 3, デジ: 2) 
+    # 合計8のうち2回（＝25%）がデジモンになります
+    weights = [3, 3, 2]
+    ans = random.choices(res_list, weights=weights)[0]
+    
+    st.success("解析が完了しました。")
     st.subheader(ans)
     
     st.write("---")
