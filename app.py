@@ -5,7 +5,7 @@ from streamlit_paste_button import paste_image_button  # 追加
 
 st.set_page_config(page_title="Hyper AI Checker", page_icon="🤖")
 
-st.title("🤖 次世代AI パル/ポケ判定システム")
+st.title("🤖 次世代AI パル/ポケモン判定システム")
 st.write("最新の技術と独自の画像認識アルゴリズムを用いて、アップロードされた画像を瞬時に解析・分類します。")
 
 # --- 画像入力エリア（ファイル選択 or コピペボタン） ---
@@ -35,17 +35,17 @@ if img_data is not None:
     
     with st.status("AIコアが画像を解析中...", expanded=True) as status:
         st.write("🔍 画像から特徴量を抽出しています...")
-        time.sleep(1)
+        time.sleep(5)
         st.write("🧠 巨大ニューラルネットワークに照会中...")
-        time.sleep(1.5)
+        time.sleep(5.5)
         st.write("⚡ 最終判定アルゴリズムを実行中...")
-        time.sleep(1)
+        time.sleep(5)
         status.update(label="解析プロセス完了", state="complete", expanded=False)
     
     results = [
-        "【判定: ポケモン】\n確信度: 99.8% (最新のアルゴリズムがそう言っています)",
-        "【判定: パルワールド】\n確信度: 98.5% (最新のアルゴリズムがそう言っています)",
-        "【判定: デジモン】\n確信度: 120% (最新のアルゴリズムがそう言っています)"
+        "【判定: ポケモン】\n確信度: 99.8% (まあ確実にそうだろうと、最新のアルゴリズムがそう言っています)",
+        "【判定: パルワールドのパル】\n確信度: 98.5% (まあ確実にそうだろうと、最新のアルゴリズムがそう言っています)",
+        "【判定: デジモン】\n確信度: 120% (まあ確実にそうだろうと、最新のアルゴリズムがそう言っています)"
     ]
     ans = random.choice(results)
     
